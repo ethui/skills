@@ -1,0 +1,1 @@
+{"name":"hardhat-app","scripts":{"deploy":"hardhat run scripts/deploy.ts","test":"hardhat test"},"devDependencies":{"@playwright/test":"^1","wagmi":"^2"}}
