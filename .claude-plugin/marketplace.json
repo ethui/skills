@@ -1,0 +1,14 @@
+{
+  "name": "ethui",
+  "owner": {
+    "name": "ethui",
+    "url": "https://github.com/ethui"
+  },
+  "plugins": [
+    {
+      "name": "ethui",
+      "source": "./",
+      "description": "Provision disposable anvil chains on a URL, deploy your project onto them, and hand the link to someone else"
+    }
+  ]
+}
