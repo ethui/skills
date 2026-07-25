@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { basename, join } from "node:path";
+import { foundryPaths } from "./detect-project.mjs";
 
 const SKIP_DIRS = new Set([".git", "node_modules", "cache", "coverage", "dist", "build", ".next"]);
 const FOURBYTE = "https://www.4byte.directory/api/v1/signatures/?hex_signature=";
@@ -55,7 +56,7 @@ export function fromBroadcast(root, address) {
 }
 
 export function fromFoundryOut(root, name) {
-  const dir = join(root, "out");
+  const dir = join(root, foundryPaths(root).out);
   if (!existsSync(dir) || !name) return null;
 
   for (const path of walk(dir, { maxDepth: 3 })) {

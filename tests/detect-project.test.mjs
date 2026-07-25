@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { test } from "node:test";
-import { detectEnvConvention, detectProject } from "../scripts/detect-project.mjs";
+import { detectEnvConvention, detectProject, foundryPaths } from "../scripts/detect-project.mjs";
 
 const fixtures = join(dirname(fileURLToPath(import.meta.url)), "fixtures");
 const foundry = join(fixtures, "foundry-app");
@@ -15,6 +15,25 @@ test("detects foundry and its deploy script", () => {
   assert.equal(result.deploy.kind, "foundry");
   assert.match(result.deploy.script, /Deploy\.s\.sol$/);
   assert.equal(result.foundry.hasBroadcast, true);
+});
+
+test("reads remapped src/out/script out of foundry.toml", () => {
+  const remapped = join(fixtures, "remapped-app");
+  assert.deepEqual(foundryPaths(remapped), {
+    src: "contracts",
+    out: "artifacts-out",
+    script: "contracts/scripts",
+  });
+
+  const result = detectProject(remapped);
+  assert.equal(result.deploy.kind, "foundry");
+  assert.match(result.deploy.script, /contracts\/scripts\/DevDeploy\.s\.sol$/);
+  assert.equal(result.foundry.hasOut, true);
+});
+
+test("falls back to foundry defaults when the config says nothing", () => {
+  assert.deepEqual(foundryPaths(foundry), { src: "src", out: "out", script: "script" });
+  assert.deepEqual(foundryPaths(bare), { src: "src", out: "out", script: "script" });
 });
 
 test("detects hardhat and prefers its package script", () => {

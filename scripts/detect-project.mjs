@@ -25,13 +25,44 @@ function listFiles(dir, predicate) {
   }
 }
 
+// foundry.toml remaps src/out/script freely, so reading it is the difference between finding a
+// project's deploy script and reporting that it has none.
+export function foundryPaths(root) {
+  const config = join(root, "foundry.toml");
+  const defaults = { src: "src", out: "out", script: "script" };
+  if (!existsSync(config)) return defaults;
+
+  let contents;
+  try {
+    contents = readFileSync(config, "utf8");
+  } catch {
+    return defaults;
+  }
+
+  const profile = contents.split(/^\s*\[/m).find((section) => section.startsWith("profile.default]"));
+  if (!profile) return defaults;
+
+  const read = (key) => {
+    const match = profile.match(new RegExp(`^\\s*${key}\\s*=\\s*['"]([^'"]+)['"]`, "m"));
+    return match?.[1];
+  };
+
+  return {
+    src: read("src") ?? defaults.src,
+    out: read("out") ?? defaults.out,
+    script: read("script") ?? defaults.script,
+  };
+}
+
 export function detectFoundry(root) {
   if (!existsSync(join(root, "foundry.toml"))) return null;
+  const paths = foundryPaths(root);
   return {
     toolchain: "foundry",
-    scripts: listFiles(join(root, "script"), (name) => name.endsWith(".s.sol")),
+    paths,
+    scripts: listFiles(join(root, paths.script), (name) => name.endsWith(".s.sol")),
     hasBroadcast: existsSync(join(root, "broadcast")),
-    hasOut: existsSync(join(root, "out")),
+    hasOut: existsSync(join(root, paths.out)),
   };
 }
 
