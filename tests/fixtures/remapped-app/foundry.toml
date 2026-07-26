@@ -1,0 +1,6 @@
+[profile.default]
+src = 'contracts'
+out = 'artifacts-out'
+libs = ["dependencies"]
+script = 'contracts/scripts'
+solc_version = '0.8.27'

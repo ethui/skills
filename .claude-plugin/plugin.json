@@ -1,0 +1,13 @@
+{
+  "name": "ethui",
+  "description": "Disposable, shareable dev chains for web3 projects, driven by ethui Stacks",
+  "version": "0.1.0",
+  "author": {
+    "name": "ethui",
+    "url": "https://github.com/ethui"
+  },
+  "homepage": "https://github.com/ethui/skills",
+  "repository": "https://github.com/ethui/skills",
+  "license": "MIT",
+  "keywords": ["web3", "ethereum", "anvil", "foundry", "testing"]
+}
